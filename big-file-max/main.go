@@ -3,18 +3,23 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
+	"math"
 	"os"
 	"strconv"
 )
 
 func main() {
 	first := true
-	maxVal := 0
+	maxVal := math.MinInt
 	defer func() {
+		output := fmt.Sprintf("max value is %d\n", maxVal)
 		if first {
-			os.Stdout.WriteString("no values found\n")
-		} else {
-			os.Stdout.WriteString(fmt.Sprintf("max value is %d\n", maxVal))
+			output = "no values found\n"
+		}
+		_, err := os.Stdout.WriteString(output)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}()
 
@@ -27,12 +32,16 @@ func main() {
 
 		val, err := strconv.Atoi(next)
 		if err != nil {
-			os.Stderr.WriteString(fmt.Sprintf("%v\n", err))
+			log.Fatal(err)
 		}
 
 		if first || val > maxVal {
 			maxVal = val
 			first = false
 		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
 	}
 }
